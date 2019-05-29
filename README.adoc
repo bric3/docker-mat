@@ -1,0 +1,62 @@
+= Eclipse MAT in Docker
+
+Runs Eclipse MAP heap dump analysis in command line.
+Report will be generated along side the heap dump file.
+
+Basic usage :
+
+[source,shell]
+----
+docker run \
+       --mount type=bind,source="$(pwd)",target=/dump \
+       docker-mat \
+       heapdump-podname-347602788-9l0z9.hprof
+----
+
+The script currently generate the 3 type of reports that Eclipse MAT can do :
+
+ - System overview
+ - Leak suspects
+ - Top components
+
+[source]
+----
+heapdump-podname-347602788-9l0z9_Leak_Suspects.zip
+heapdump-podname-347602788-9l0z9_System_Overview.zip
+heapdump-podname-347602788-9l0z9_Top_Components.zip
+----
+
+
+As with thew regular Eclipse MAT, these 3 reports are available in a zipped form:
+
+Along with other generated files.
+
+[source]
+----
+heapdump-podname-347602788-9l0z9.a2s.index
+heapdump-podname-347602788-9l0z9.domIn.index
+heapdump-podname-347602788-9l0z9.domOut.index
+heapdump-podname-347602788-9l0z9.hprof
+heapdump-podname-347602788-9l0z9.i2sv2.index
+heapdump-podname-347602788-9l0z9.idx.index
+heapdump-podname-347602788-9l0z9.inbound.index
+heapdump-podname-347602788-9l0z9.index
+heapdump-podname-347602788-9l0z9.o2c.index
+heapdump-podname-347602788-9l0z9.o2hprof.index
+heapdump-podname-347602788-9l0z9.o2ret.index
+heapdump-podname-347602788-9l0z9.outbound.index
+heapdump-podname-347602788-9l0z9.threads
+----
+
+== Who is it for ?
+
+- People that do not want to download manually Eclipse MAT
+- People that do not want to use Eclipse MAT user interface
+- People that need to analyze a lot of heap dumps
+- People that want to to automate heap dump reports
+
+
+== Licenses
+
+- Eclipse MAT belongs to Eclipse
+- Docker belongs to Docker
