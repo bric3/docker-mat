@@ -1,3 +1,6 @@
+
+image::https://img.shields.io/badge/Eclipse%20MAT%20version-1.8.1-red.svg[Eclipse MAT version]
+
 = Eclipse MAT in Docker
 
 Runs Eclipse MAP heap dump analysis in command line.
