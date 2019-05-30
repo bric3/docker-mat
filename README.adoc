@@ -6,7 +6,7 @@ image::https://img.shields.io/badge/Eclipse%20MAT%20version-1.8.1-red.svg[Eclips
 Runs Eclipse MAP heap dump analysis in command line.
 Report will be generated along side the heap dump file.
 
-Basic usage :
+== Basic usage
 
 [source,shell]
 ----
@@ -16,7 +16,12 @@ docker run \
        heapdump-podname-347602788-9l0z9.hprof
 ----
 
-The script currently generate the 3 type of reports that Eclipse MAT can do :
+One the parsing is done, the reports are ready and just open the `hprof` file in 
+Eclipse MAT, no parsing is necessary one just navigate the reports.
+
+But Eclipse MAT is not necessary if one want to just consults the report without having to open Eclipse MAT application.
+
+The script currently generates the 3 type of reports that Eclipse MAT can perform, and it's probably those to look at anyway :
 
  - System overview
  - Leak suspects
@@ -29,10 +34,64 @@ heapdump-podname-347602788-9l0z9_System_Overview.zip
 heapdump-podname-347602788-9l0z9_Top_Components.zip
 ----
 
+Inside each of these zip files there is a simple HTML structure, that can be opened and navigated in a browser.
 
-As with thew regular Eclipse MAT, these 3 reports are available in a zipped form:
+[source,shell]
+----
+> unzip -d leak_suspects-podname-347602788-9l0z9 heapdump-podname-347602788-9l0z9_Leak_Suspects.zip
+Archive:  heapdump-podname-347602788-9l0z9_Leak_Suspects.zip
+  inflating: leak_suspects-podname-347602788-9l0z9/styles.css  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/fork.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/nochildren.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/line.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/warning.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/open.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/closed.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/success.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/error.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/corner.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/opened.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/img/empty.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/toc.html  
+  inflating: leak_suspects-podname-347602788-9l0z9/index.html  
+  inflating: leak_suspects-podname-347602788-9l0z9/code.js   
+  inflating: leak_suspects-podname-347602788-9l0z9/pages/Class_Histogram7.html  
+  inflating: leak_suspects-podname-347602788-9l0z9/pages/Thread_Overview5.html  
+  inflating: leak_suspects-podname-347602788-9l0z9/pages/23.html  
+  inflating: leak_suspects-podname-347602788-9l0z9/pages/Top_Consumers6.html  
+  inflating: leak_suspects-podname-347602788-9l0z9/pages/System_Overview2.html  
+  inflating: leak_suspects-podname-347602788-9l0z9/pages/20.html  
+  inflating: leak_suspects-podname-347602788-9l0z9/pages/System_Properties4.html  
+  inflating: leak_suspects-podname-347602788-9l0z9/pages/21.html  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i5.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i0.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i3.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i8.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i9.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i2.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i6.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i1.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i10.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i4.gif  
+  inflating: leak_suspects-podname-347602788-9l0z9/icons/i7.gif  
+----
 
-Along with other generated files.
+In fact when Eclipse MAT is running after it generated the reports, it barely loads these reports in tabs.
+
+****
+While this approach usually suffice but there's some caveats :
+
+1. These reports are may have links with the `mat://` sheme, e.g. `mat://query/leakhunter`, those links do not work in the browser.
+
+2. Memory since the analyzer runs in a container the process can be a bit more constrained.
+If the heap dump is 3gb it is necessary to tweak the` JAVA_OPTS` with `-Xmx` and `-Xms` but not only!
+For example if docker is running on OSX it may be necessary to increase hyperkit memory to allow such memory.
+(Docker > Preferences > Advanced tab > Memory).
+****
+
+
+Other files are generated along, those allows the UI to navigate through other elements 
+available in the heap dump, and should be kept in order to open the analysis in Eclipse MAT.
 
 [source]
 ----
@@ -50,6 +109,44 @@ heapdump-podname-347602788-9l0z9.o2ret.index
 heapdump-podname-347602788-9l0z9.outbound.index
 heapdump-podname-347602788-9l0z9.threads
 ----
+
+
+== Need more memory
+
+If the parser fails with an OOME in the log, then declare bigger `-Xms` `-Xmx` options
+usually at least of the size of the heap dump. And eventually increase the memory to the 
+matching amount in your Docker settings.
+
+[source]
+----
+ommand-line arguments:  -consolelog -application org.eclipse.mat.api.parse /dump/heapdump-podname-305475067-cfnp4.hprof org.eclipse.mat.api:suspects org.eclipse.mat.api:overview org.eclipse.mat.api:top_components
+
+!ENTRY org.eclipse.osgi 4 0 2019-05-30 08:58:27.146
+!MESSAGE Application error
+!STACK 1
+java.lang.OutOfMemoryError: Java heap space
+...
+----
+
+
+----
+Analyzing heapDump-edge-api-305475067-cfnp4.hprof
+Task: Parsing heapDump-edge-api-305475067-cfnp4.hprof
+[Task: Parsing /dump/heapDump-edge-api-305475067-cfnp4.hprof
+[
+Subtask: Scanning /dump/heapDump-edge-api-305475067-cfnp4.hprof
+[
+[INFO] Detected compressed references, because with uncompressed 64-bit references the array at 0xd5581fd0 would overlap the array at 0xd5581f80
+[....................
+[INFO] Wrote threads call stacks to /dump/heapDump-edge-api-305475067-cfnp4.threads
+[....................
+[INFO] Heap /dump/heapDump-edge-api-305475067-cfnp4.hprof contains 35,434,200 objects
+[....................
+Subtask: Extracting objects from /dump/heapDump-edge-api-305475067-cfnp4.hprof
+Killed
+[................................................................................
+----
+
 
 == Who is it for ?
 
