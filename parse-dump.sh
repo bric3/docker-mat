@@ -21,7 +21,7 @@ function usage() {
 [[ -f "${heapdump_volume}/${heapdump}" ]] && printf "Analyzing %s\n" ${heapdump} || { printf "'${heapdump}' does not exists\n"; exit 1; }
 
 
-java $JAVA_OPS \
+java $JAVA_OPTS \
     -jar mat/plugins/org.eclipse.equinox.launcher_*.jar \
     -consolelog \
     -application org.eclipse.mat.api.parse \
