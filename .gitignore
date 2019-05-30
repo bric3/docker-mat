@@ -1,2 +1,5 @@
-*.hprof
 *.log
+*.hprof
+*.index
+*.threads
+*.zip

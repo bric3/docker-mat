@@ -1,2 +1,6 @@
 .git
 *.hprof
+*.index
+*.threads
+*.zip
+*.log
