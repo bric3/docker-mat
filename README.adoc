@@ -128,7 +128,7 @@ java.lang.OutOfMemoryError: Java heap space
 ...
 ----
 
-
+[source]
 ----
 Analyzing heapDump-edge-api-305475067-cfnp4.hprof
 Task: Parsing heapDump-edge-api-305475067-cfnp4.hprof
@@ -147,6 +147,15 @@ Killed
 [................................................................................
 ----
 
+If the process appears to suffer, it may be due to the GC, but it's not possible to 
+use `jmap` if the container has not be started with the following option (Docker 1.18+)
+
+[source]
+----
+--cap-add SYS_PTRACE
+----
+
+See https://github.com/moby/moby/issues/21051[this] issue thread for more details.
 
 == Who is it for ?
 
